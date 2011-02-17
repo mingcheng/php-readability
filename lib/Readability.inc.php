@@ -6,6 +6,10 @@
  * Readability PHP 版本，详见
  *      http://code.google.com/p/arc90labs-readability/
  *
+ * ChangeLog:
+ *
+ *      [+] 2011-02-17 初始化版本
+ *
  * @author mingcheng<i.feelinglucky#gmail.com>
  * @date   2011-02-17
  * @link   http://www.gracecode.com/
@@ -50,6 +54,7 @@ class Readability {
         // 生成 DOM 解析类
         $this->DOM = new DOMDocument;
         try {
+            // 会有些错误信息，不过不要紧 :^)
             @$this->DOM->loadHTML('<?xml encoding="'.Readability::DOM_DEFAULT_CHARSET.'">'.$source);
             $this->DOM->encoding = Readability::DOM_DEFAULT_CHARSET; // insert proper
         } catch (Exception $e) {
@@ -207,7 +212,5 @@ class Readability {
     }
 
 
-    function __destruct() {
-    
-    }
+    function __destruct() { }
 }

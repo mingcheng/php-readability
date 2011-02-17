@@ -8,15 +8,10 @@
  * @link   http://www.gracecode.com/
  */
 
-include('lib/Readability.inc.php');
+require 'lib/Readability.inc.php';
 
 header("Content-type: text/html;charset=utf-8");
 
-mb_detect_order("gb18030,gbk,utf-8,ascii");
-
-$source = trim(file_get_contents("nytime.html"));
-
-/*
 $request_url = "http://www.izaobao.us/index.php/2011-02/zaobao-8805/";
 $handle = curl_init();
 curl_setopt_array($handle, array(
@@ -28,13 +23,12 @@ curl_setopt_array($handle, array(
 ));
 
 $source = curl_exec($handle);
- */
-
-//echo $source;
 
 preg_match("/charset=([\w|\-]+);?/", $source, $match);
 $charset = isset($match[1]) ? $match[1] : 'utf-8';
 
 $Readability = new Readability($source, $charset);
 $Data = $Readability->getContent();
+echo "<h1>".$Data['title']."</h1>";
 echo $Data['content'];
+
