@@ -38,7 +38,7 @@ class Readability {
     private $parentNodes = array();
 
     // 需要删除的标签
-    private $junkTags = Array("style", "form", "iframe", "script");
+    private $junkTags = Array("style", "form", "iframe", "script", "button", "input", "textarea");
 
 
     function __construct($source, $input_char = "utf-8") {

@@ -7,7 +7,8 @@
     </head>
     <body>
         <div id="page" class="article">
-            <h1><?php echo $title; ?></h1>
+            <h1><a title="back to original page"
+                    href="<?php echo $request_url; ?>"><?php echo $title; ?></a></h1>
             <hr />
             <?php echo $content; ?>
         </div>

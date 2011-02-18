@@ -90,6 +90,13 @@ a:link, a:visited, a:hover {
     font-size: 1.8em;
 }
 
+.article h1 a:link,
+.article h1 a:hover,
+.article h1 a:visited {
+    text-decoration: none;
+}
+
+
 .article h2 {
     font-size: 1.5em;
 }
