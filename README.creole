@@ -1,4 +1,4 @@
-= Readability in PHP =
+= PHP Readability Library =
 
 [[http://code.google.com/p/arc90labs-readability/|Readability.js by Arc90]]
 ported to PHP.
