@@ -124,7 +124,7 @@ a:link, a:visited, a:hover {
 
 .article code,
 .article pre,
-.article p img {
+.article img {
     padding: 5px;
     border: 1px solid #999;
     background: #fff;
@@ -146,8 +146,6 @@ a:link, a:visited, a:hover {
 .article code *, .article pre * {
     border: 0;
 }
-
-
 
 .article dl, .article ol, .article ul {
     line-height: 1.5em;

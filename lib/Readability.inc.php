@@ -24,9 +24,9 @@ class Readability {
     const DOM_DEFAULT_CHARSET = "utf-8";
 
     // 当判定失败时显示的内容
-    const MESSAGE_CAN_NOT_GET = 'Sorry, readability was unable to parse this page for content. 
+    const MESSAGE_CAN_NOT_GET = "Sorry, readability was unable to parse this page for content.  \n
             If you feel like it should have been able to, 
-            please let me know by mail: lucky[at]gracecode.com';
+            please let me know by mail: lucky[at]gracecode.com";
 
     // DOM 解析类（PHP5 已内置）
     protected $DOM = null;
@@ -55,13 +55,18 @@ class Readability {
         try {
             //libxml_use_internal_errors(true);
             // 会有些错误信息，不过不要紧 :^)
-            @$this->DOM->loadHTML('<?xml encoding="'.Readability::DOM_DEFAULT_CHARSET.'">'.$source);
+            if (!@$this->DOM->loadHTML('<?xml encoding="'.Readability::DOM_DEFAULT_CHARSET.'">'.$source)) {
+                throw new Exception("Parse HTML Error!");
+            }
+
             foreach ($this->DOM->childNodes as $item) {
                 if ($item->nodeType == XML_PI_NODE) {
                     $this->DOM->removeChild($item); // remove hack
                 }
             }
-            $this->DOM->encoding = Readability::DOM_DEFAULT_CHARSET; // insert proper
+
+            // insert proper
+            $this->DOM->encoding = Readability::DOM_DEFAULT_CHARSET;
         } catch (Exception $e) {
             // ...
         }
@@ -210,7 +215,7 @@ class Readability {
 
         // 多个数据，以数组的形式返回
         return Array(
-            'title'   => $ContentTitle->nodeValue,
+            'title'   => $ContentTitle ? $ContentTitle->nodeValue : "",
             'content' => $Target->saveHTML()
         );
     }

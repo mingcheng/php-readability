@@ -56,6 +56,9 @@ if (file_exists($request_url_cache_file) &&
 preg_match("/charset=([\w|\-]+);?/", $source, $match);
 $charset = isset($match[1]) ? $match[1] : 'utf-8';
 
+/**
+ * 获取 HTML 内容后，解析主体内容
+ */
 $Readability = new Readability($source, $charset);
 $Data = $Readability->getContent();
 
