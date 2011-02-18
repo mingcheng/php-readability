@@ -34,6 +34,7 @@ if (file_exists($request_url_cache_file) &&
     $handle = curl_init();
     curl_setopt_array($handle, array(
         CURLOPT_HTTPGET => true,
+	    CURLOPT_USERAGENT => USER_AGENT,
         CURLOPT_HEADER  => false,
         CURLOPT_TIMEOUT => 30,
         CURLOPT_RETURNTRANSFER => true,
@@ -47,7 +48,9 @@ if (file_exists($request_url_cache_file) &&
     file_put_contents($request_url_cache_file, $source);
 }
 
-// 去除编码标签并自动判断编码
+// 判断编码
+//if (!$charset = mb_detect_encoding($source)) {
+//}
 preg_match("/charset=([\w|\-]+);?/", $source, $match);
 $charset = isset($match[1]) ? $match[1] : 'utf-8';
 

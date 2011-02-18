@@ -46,21 +46,26 @@ class Readability {
         $this->source = $source;
 
         // DOM 解析类只能处理 UTF-8 格式的字符
-        $source = iconv($input_char, Readability::DOM_DEFAULT_CHARSET, $source);
+        $source = mb_convert_encoding($source, 'HTML-ENTITIES', $input_char);
 
         // 预处理 HTML 标签，剔除冗余的标签等
         $source = $this->preparSource($source);
-    
+
         // 生成 DOM 解析类
-        $this->DOM = new DOMDocument;
+        $this->DOM = new DOMDocument('1.0', $input_char);
         try {
+            //libxml_use_internal_errors(true);
             // 会有些错误信息，不过不要紧 :^)
             @$this->DOM->loadHTML('<?xml encoding="'.Readability::DOM_DEFAULT_CHARSET.'">'.$source);
+            foreach ($this->DOM->childNodes as $item) {
+                if ($item->nodeType == XML_PI_NODE) {
+                    $this->DOM->removeChild($item); // remove hack
+                }
+            }
             $this->DOM->encoding = Readability::DOM_DEFAULT_CHARSET; // insert proper
         } catch (Exception $e) {
             // ...
         }
-
     }
 
 
@@ -73,7 +78,7 @@ class Readability {
         // 剔除多余的 HTML 编码标记，避免解析出错
         preg_match("/charset=([\w|\-]+);?/", $string, $match);
         if (isset($match[1])) {
-            $string = preg_replace("/charset=(\w+);?/", "", $string, 1);
+            $string = preg_replace("/charset=([\w|\-]+);?/", "", $string, 1);
         }
 
         // Replace all doubled-up <BR> tags with <P> tags, and remove fonts.
