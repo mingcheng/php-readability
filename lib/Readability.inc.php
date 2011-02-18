@@ -26,8 +26,7 @@ class Readability {
     // 当判定失败时显示的内容
     const MESSAGE_CAN_NOT_GET = 'Sorry, readability was unable to parse this page for content. 
             If you feel like it should have been able to, 
-            please <a href="http://code.google.com/p/arc90labs-readability/issues/entry">
-            let us know by submitting an issue.</a>';
+            please let me know by mail: lucky[at]gracecode.com';
 
     // DOM 解析类（PHP5 已内置）
     protected $DOM = null;

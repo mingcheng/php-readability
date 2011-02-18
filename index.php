@@ -33,11 +33,12 @@ if (file_exists($request_url_cache_file) &&
 
     $handle = curl_init();
     curl_setopt_array($handle, array(
-        CURLOPT_HTTPGET => true,
 	    CURLOPT_USERAGENT => USER_AGENT,
+        CURLOPT_FOLLOWLOCATION => true,
         CURLOPT_HEADER  => false,
-        CURLOPT_TIMEOUT => 30,
+        CURLOPT_HTTPGET => true,
         CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_TIMEOUT => 30,
         CURLOPT_URL => $request_url
     ));
 
