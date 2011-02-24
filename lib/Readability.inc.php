@@ -15,6 +15,7 @@
  * @link   http://www.gracecode.com/
  */
 
+define("READABILITY_VERSION", 0.1);
 
 class Readability {
     // 保存判定结果的标记位名称

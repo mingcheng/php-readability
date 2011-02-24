@@ -132,13 +132,13 @@ a:link, a:visited, a:hover {
     -webkit-border-radius: 5px;
     border-radius: 5px;
     max-width: 90%;
-    margin: .5em auto;
+    margin: .3em 0;
 }
 
 
 .article code,
 .article pre {
-    margin: 1em auto;
+    margin: 1em 0;
     font-size: 14px;
     font-family: monaco, "new courier", courier, sans-serif;
 }

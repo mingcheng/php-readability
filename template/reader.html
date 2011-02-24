@@ -2,14 +2,15 @@
 <html>
     <head>
         <meta charset="utf-8" />
-        <base href="<?php echo dirname($request_url); ?>" />
-        <title><?php echo $title; ?> - lab.gracecode.com</title>
+        <base href="<?php echo strip_tags($request_url); ?>" />
+        <title><?php echo mb_convert_encoding($title, "HTML-ENTITIES", "UTF-8"); ?> - lab.gracecode.com</title>
         <?php include DIR_ROOT . '/template/header.inc.html'; ?>
     </head>
     <body>
         <div id="page" class="article">
             <h1><a title="back to original page"
-                    href="<?php echo $request_url; ?>"><?php echo $title; ?></a></h1>
+                   href="<?php echo strip_tags($request_url); ?>"><?php 
+                   echo mb_convert_encoding($title, 'HTML-ENTITIES', "UTF-8"); ?></a></h1>
             <hr />
             <?php echo $content; ?>
             <hr />
