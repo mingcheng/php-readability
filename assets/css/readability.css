@@ -14,6 +14,10 @@ body {
     font-family: "minion-pro-1","minion-pro-2",Palatino,Georgia,"Times New Roman",serif;
 }
 
+* html hr, html > body hr {
+    margin: 1em 0;
+}
+
 a:link, a:visited, a:hover {
     color: #333;
 }

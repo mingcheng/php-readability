@@ -15,7 +15,7 @@
  * @link   http://www.gracecode.com/
  */
 
-define("READABILITY_VERSION", 0.1);
+define("READABILITY_VERSION", 0.12);
 
 class Readability {
     // 保存判定结果的标记位名称
@@ -41,7 +41,14 @@ class Readability {
     // 需要删除的标签
     private $junkTags = Array("style", "form", "iframe", "script", "button", "input", "textarea");
 
+    // 需要删除的属性
+    private $junkAttrs = Array("style", "class", "onclick", "onmouseover", "align", "border", "margin");
 
+
+    /**
+     * 构造函数
+     *      @param $input_char 字符串的编码。默认 utf-8，可以省略
+     */
     function __construct($source, $input_char = "utf-8") {
         $this->source = $source;
 
@@ -97,10 +104,10 @@ class Readability {
     /**
      * 删除 DOM 元素中所有的 $TagName 标签
      *
-     * @return DOMNode
+     * @return DOMDocument
      */
-    private function removeJunkTag($Node, $TagName) {
-        $Tags = $Node->getElementsByTagName($TagName);
+    private function removeJunkTag($RootNode, $TagName) {
+        $Tags = $RootNode->getElementsByTagName($TagName);
 
         $i = 0;
         while($Tag = $Tags->item($i++)) {
@@ -108,9 +115,22 @@ class Readability {
             $parentNode->removeChild($Tag);
         }
 
-        return $Node;
+        return $RootNode;
     }
 
+    /**
+     * 删除元素中所有不需要的属性
+     */
+    private function removeJunkAttr($RootNode, $Attr) {
+        $Tags = $RootNode->getElementsByTagName("*");
+
+        $i = 0;
+        while($Tag = $Tags->item($i++)) {
+            $Tag->removeAttribute($Attr);
+        }
+
+        return $RootNode;
+    }
 
     /**
      * 根据评分获取页面主要内容的盒模型
@@ -205,14 +225,19 @@ class Readability {
         // 获取页面主内容
         $ContentBox = $this->getTopBox();
 
-        // 删除不需要的标签
-        foreach ($this->junkTags as $tag) {
-            $ContentBox = $this->removeJunkTag($ContentBox, $tag);
-        }
-
         // 复制内容到新的 DOMDocument
         $Target = new DOMDocument;
         $Target->appendChild($Target->importNode($ContentBox, true));
+
+        // 删除不需要的标签
+        foreach ($this->junkTags as $tag) {
+            $Target = $this->removeJunkTag($Target, $tag);
+        }
+
+        // 删除不需要的属性
+        foreach ($this->junkAttrs as $attr) {
+            $Target = $this->removeJunkAttr($Target, $attr);
+        }
 
         // 多个数据，以数组的形式返回
         return Array(
@@ -220,7 +245,6 @@ class Readability {
             'content' => $Target->saveHTML()
         );
     }
-
 
     function __destruct() { }
 }
