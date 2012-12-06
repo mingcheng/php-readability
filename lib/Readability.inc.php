@@ -242,7 +242,7 @@ class Readability {
         // 多个数据，以数组的形式返回
         return Array(
             'title'   => $ContentTitle ? $ContentTitle->nodeValue : "",
-            'content' => mb_convert_encoding($Target->saveHTML(), DOM_DEFAULT_CHARSET, "HTML-ENTITIES")
+            'content' => mb_convert_encoding($Target->saveHTML(), Readability::DOM_DEFAULT_CHARSET, "HTML-ENTITIES")
         );
     }
 
