@@ -7,15 +7,19 @@
  *      http://code.google.com/p/arc90labs-readability/
  *
  * ChangeLog:
- *
+ *      [+] 2013-12-04 Better error handling and junk tag removal.
  *      [+] 2011-02-17 初始化版本
  *
+ * @date   2013-12-04
+ * 
  * @author mingcheng<i.feelinglucky#gmail.com>
- * @date   2011-02-17
  * @link   http://www.gracecode.com/
+ * 
+ * @author Tuxion <team#tuxion.nl>
+ * @link   http://tuxion.nl/
  */
 
-define("READABILITY_VERSION", 0.12);
+define("READABILITY_VERSION", 0.13);
 
 class Readability {
     // 保存判定结果的标记位名称
@@ -25,9 +29,7 @@ class Readability {
     const DOM_DEFAULT_CHARSET = "utf-8";
 
     // 当判定失败时显示的内容
-    const MESSAGE_CAN_NOT_GET = "Sorry, readability was unable to parse this page for content.  \n
-            If you feel like it should have been able to, 
-            please let me know by mail: lucky[at]gracecode.com";
+    const MESSAGE_CAN_NOT_GET = "Readability was unable to parse this page for content.";
 
     // DOM 解析类（PHP5 已内置）
     protected $DOM = null;
@@ -39,7 +41,11 @@ class Readability {
     private $parentNodes = array();
 
     // 需要删除的标签
-    private $junkTags = Array("style", "form", "iframe", "script", "button", "input", "textarea");
+    // Note: added extra tags from https://github.com/ridcully
+    private $junkTags = Array("style", "form", "iframe", "script", "button", "input", "textarea", 
+                                "noscript", "select", "option", "object", "applet", "basefont",
+                                "bgsound", "blink", "canvas", "command", "menu", "nav", "datalist",
+                                "embed", "frame", "frameset", "keygen", "label", "marquee", "link");
 
     // 需要删除的属性
     private $junkAttrs = Array("style", "class", "onclick", "onmouseover", "align", "border", "margin");
@@ -107,15 +113,17 @@ class Readability {
      * @return DOMDocument
      */
     private function removeJunkTag($RootNode, $TagName) {
+        
         $Tags = $RootNode->getElementsByTagName($TagName);
-
-        $i = 0;
-        while($Tag = $Tags->item($i++)) {
+        
+        //Note: always index 0, because removing a tag removes it from the results as well.
+        while($Tag = $Tags->item(0)){
             $parentNode = $Tag->parentNode;
             $parentNode->removeChild($Tag);
         }
-
+        
         return $RootNode;
+        
     }
 
     /**
@@ -182,19 +190,20 @@ class Readability {
             array_push($this->parentNodes, $parentNode);
         }
 
-        $topBox = $this->DOM->createElement('div', Readability::MESSAGE_CAN_NOT_GET);
+        $topBox = null;
+        
         // Assignment from index for performance. 
         //     See http://www.peachpit.com/articles/article.aspx?p=31567&seqNum=5 
         for ($i = 0, $len = sizeof($this->parentNodes); $i < $len; $i++) {
             $parentNode      = $this->parentNodes[$i];
             $contentScore    = intval($parentNode->getAttribute(Readability::ATTR_CONTENT_SCORE));
-            $orgContentScore = intval($topBox->getAttribute(Readability::ATTR_CONTENT_SCORE));
+            $orgContentScore = intval($topBox ? $topBox->getAttribute(Readability::ATTR_CONTENT_SCORE) : 0);
 
             if ($contentScore && $contentScore > $orgContentScore) {
                 $topBox = $parentNode;
             }
         }
-
+        
         // 此时，$topBox 应为已经判定后的页面内容主元素
         return $topBox;
     }
@@ -224,7 +233,11 @@ class Readability {
 
         // 获取页面主内容
         $ContentBox = $this->getTopBox();
-
+        
+        //Check if we found a suitable top-box.
+        if($ContentBox === null)
+            throw new \RuntimeException(Readability::MESSAGE_CAN_NOT_GET);
+        
         // 复制内容到新的 DOMDocument
         $Target = new DOMDocument;
         $Target->appendChild($Target->importNode($ContentBox, true));

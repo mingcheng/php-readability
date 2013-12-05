@@ -22,7 +22,7 @@ http://lab.gracecode.com/readability/
 require 'lib/Readability.inc.php';
 
 $Readability     = new Readability($html, $html_input_charset); // default charset is utf-8
-$ReadabilityData = $Readability->getContent();
+$ReadabilityData = $Readability->getContent(); // throws an exception when no suitable content is found
 
 echo "<h1>".$ReadabilityData['title']."</h1>";
 echo $ReadabilityData['content'];
