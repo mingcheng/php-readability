@@ -268,11 +268,14 @@ class Readability {
             $Target = $this->removeJunkAttr($Target, $attr);
         }
 
+        $content = mb_convert_encoding($Target->saveHTML(), Readability::DOM_DEFAULT_CHARSET, "HTML-ENTITIES");
+
         // 多个数据，以数组的形式返回
         return Array(
             'lead_image_url' => $this->getLeadImageUrl($Target),
-            'title'   => $ContentTitle ? $ContentTitle->nodeValue : "",
-            'content' => mb_convert_encoding($Target->saveHTML(), Readability::DOM_DEFAULT_CHARSET, "HTML-ENTITIES")
+            'word_count' => mb_strlen(strip_tags($content), Readability::DOM_DEFAULT_CHARSET),
+            'title' => trim($ContentTitle ? $ContentTitle->nodeValue : ""),
+            'content' => $content
         );
     }
 
