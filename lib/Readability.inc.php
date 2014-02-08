@@ -221,6 +221,22 @@ class Readability {
 
 
     /**
+     * Get Leading Image Url
+     *
+     * @return String
+     */
+    public function getLeadImageUrl($node) {
+        $images = $node->getElementsByTagName("img");
+
+        if ($images->length && $leadImage = $images->item(0)) {
+            return $leadImage->getAttribute("src");
+        }
+
+        return null;
+    }
+
+
+    /**
      * 获取页面的主要内容（Readability 以后的内容）
      *
      * @return Array
@@ -254,6 +270,7 @@ class Readability {
 
         // 多个数据，以数组的形式返回
         return Array(
+            'lead_image_url' => $this->getLeadImageUrl($Target),
             'title'   => $ContentTitle ? $ContentTitle->nodeValue : "",
             'content' => mb_convert_encoding($Target->saveHTML(), Readability::DOM_DEFAULT_CHARSET, "HTML-ENTITIES")
         );
@@ -261,3 +278,4 @@ class Readability {
 
     function __destruct() { }
 }
+
