@@ -215,8 +215,18 @@ class Readability {
      * @return String
      */
     public function getTitle() {
-        $title = $this->DOM->getElementsByTagName("title");
-        return $title->item(0);
+        $split_point = ' - ';
+        $titleNodes = $this->DOM->getElementsByTagName("title");
+
+        if ($titleNodes->length 
+            && $titleNode = $titleNodes->item(0)) {
+            // @see http://stackoverflow.com/questions/717328/how-to-explode-string-right-to-left
+            $title  = trim($titleNode->nodeValue);
+            $result = array_map('strrev', explode($split_point, strrev($title)));
+            return sizeof($result) > 1 ? array_pop($result) : $title;
+        }
+
+        return null;
     }
 
 
@@ -252,7 +262,7 @@ class Readability {
         
         //Check if we found a suitable top-box.
         if($ContentBox === null)
-            throw new \RuntimeException(Readability::MESSAGE_CAN_NOT_GET);
+            throw new RuntimeException(Readability::MESSAGE_CAN_NOT_GET);
         
         // 复制内容到新的 DOMDocument
         $Target = new DOMDocument;
@@ -274,7 +284,7 @@ class Readability {
         return Array(
             'lead_image_url' => $this->getLeadImageUrl($Target),
             'word_count' => mb_strlen(strip_tags($content), Readability::DOM_DEFAULT_CHARSET),
-            'title' => trim($ContentTitle ? $ContentTitle->nodeValue : ""),
+            'title' => $ContentTitle ? $ContentTitle : null,
             'content' => $content
         );
     }
