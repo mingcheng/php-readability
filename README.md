@@ -31,5 +31,5 @@ echo $ReadabilityData['content'];
 
 
 
-PS: For Node.js port, You can [[https://github.com/arrix/node-readability/|check this]].
+PS: For Node.js port, You can [check this](https://github.com/arrix/node-readability/).
 
