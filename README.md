@@ -1,24 +1,24 @@
-= PHP Readability Library =
+# PHP Readability Library
 
-[[http://code.google.com/p/arc90labs-readability/|Readability.js by Arc90]]
-ported to PHP.
+## Back the fun of reading
 
-PS: for Node.js port, [[https://github.com/arrix/node-readability/|pls check this]].
+The PHP port of [[http://code.google.com/p/arc90labs-readability/|Readability.js by Arc90]].
 
 
-== Requirements ==
+## Requirements
 
 * PHP Version >= 5
 * [[http://www.php.net/manual/en/book.dom.php|PHP has builded with DOM(Document Object Model)]]
 
 
-== Live demo == 
+## Live demo 
 
-http://lab.gracecode.com/readability/
+http://graceco.de/readability/
 
-== Example ==
 
-{{{
+## Usage
+
+```
 require 'lib/Readability.inc.php';
 
 $Readability     = new Readability($html, $html_input_charset); // default charset is utf-8
@@ -26,5 +26,7 @@ $ReadabilityData = $Readability->getContent(); // throws an exception when no su
 
 echo "<h1>".$ReadabilityData['title']."</h1>";
 echo $ReadabilityData['content'];
-}}}
+```
+
+PS: For Node.js port, You can [[https://github.com/arrix/node-readability/|check this]].
 
