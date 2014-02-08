@@ -7,6 +7,7 @@
  *      http://code.google.com/p/arc90labs-readability/
  *
  * ChangeLog:
+ *      [+] 2014-02-08 Add lead image param and improved get title function.
  *      [+] 2013-12-04 Better error handling and junk tag removal.
  *      [+] 2011-02-17 初始化版本
  *
@@ -19,7 +20,7 @@
  * @link   http://tuxion.nl/
  */
 
-define("READABILITY_VERSION", 0.13);
+define("READABILITY_VERSION", 0.20);
 
 class Readability {
     // 保存判定结果的标记位名称
