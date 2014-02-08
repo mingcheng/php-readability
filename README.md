@@ -2,13 +2,13 @@
 
 ## Back the fun of reading
 
-The PHP port of [[http://code.google.com/p/arc90labs-readability/|Readability.js by Arc90]].
+The PHP port of [Readability.js by Arc90](http://code.google.com/p/arc90labs-readability/).
 
 
 ## Requirements
 
 * PHP Version >= 5
-* [[http://www.php.net/manual/en/book.dom.php|PHP has builded with DOM(Document Object Model)]]
+* [PHP has builded with DOM(Document Object Model)](http://www.php.net/manual/en/book.dom.php)
 
 
 ## Live demo 
