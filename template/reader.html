@@ -3,18 +3,24 @@
     <head>
         <meta charset="utf-8" />
         <base href="<?php echo strip_tags($request_url); ?>" />
-        <title><?php echo mb_convert_encoding($title, "HTML-ENTITIES", "UTF-8"); ?> - lab.gracecode.com</title>
+        <title><?php echo mb_convert_encoding($title, "HTML-ENTITIES", "UTF-8"); ?> - Gracecode.com</title>
         <?php include DIR_ROOT . '/template/header.inc.html'; ?>
     </head>
-    <body>
-        <div id="page" class="article">
+    <body class="bg">
+        <header>
+            <h1 id="logo"><a href=".">無標題文檔</a></h1>
+            <a href="https://github.com/feelinglucky/php-readability"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
+        </header>
+
+        <article class="article body"> 
             <h1><a title="back to original page"
                    href="<?php echo strip_tags($request_url); ?>"><?php 
                    echo mb_convert_encoding($title, 'HTML-ENTITIES', "UTF-8"); ?></a></h1>
-            <hr />
+
             <?php echo $content; ?>
-            <hr />
-            <?php include DIR_ROOT . '/template/footer.inc.html'; ?>
-        </div>
+
+        </article>
+
+        <?php include DIR_ROOT . '/template/footer.inc.html'; ?>
     </body>
 </html>

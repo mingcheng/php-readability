@@ -47,7 +47,7 @@ if (file_exists($request_url_cache_file) &&
     curl_close($handle);
 
     // Write request data into cache file.
-    file_put_contents($request_url_cache_file, $source);
+    @file_put_contents($request_url_cache_file, $source);
 }
 
 // 判断编码
@@ -77,3 +77,4 @@ switch($output_type) {
 
         include 'template/reader.html';
 }
+
