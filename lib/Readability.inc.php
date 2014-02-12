@@ -20,7 +20,7 @@
  * @link   http://tuxion.nl/
  */
 
-define("READABILITY_VERSION", 0.20);
+define("READABILITY_VERSION", 0.21);
 
 class Readability {
     // 保存判定结果的标记位名称
