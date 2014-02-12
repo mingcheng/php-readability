@@ -1,5 +1,5 @@
 <?php
-// vim: set et sw=4 ts=4 sts=4 fdm=marker ff=unix fenc=utf8 nobomb:
+// vim: set et sw=4 ts=4 sts=4 ft=php fdm=marker ff=unix fenc=utf8 nobomb:
 /**
  * PHP Readability
  *
@@ -103,6 +103,10 @@ class Readability {
         // Replace all doubled-up <BR> tags with <P> tags, and remove fonts.
         $string = preg_replace("/<br\/?>[ \r\n\s]*<br\/?>/i", "</p><p>", $string);
         $string = preg_replace("/<\/?font[^>]*>/i", "", $string);
+
+        // @see https://github.com/feelinglucky/php-readability/issues/7
+        //   - from http://stackoverflow.com/questions/7130867/remove-script-tag-from-html-content
+        $string = preg_replace("#<script(.*?)>(.*?)</script>#is", "", $string);
 
         return trim($string);
     }
