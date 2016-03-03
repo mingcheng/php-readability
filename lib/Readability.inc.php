@@ -243,9 +243,19 @@ class Readability {
     public function getLeadImageUrl($node) {
         $images = $node->getElementsByTagName("img");
 
-        if ($images->length && $leadImage = $images->item(0)) {
-            return $leadImage->getAttribute("src");
-        }
+        if ($images->length){
+			$i = 0;
+			while($leadImage = $images->item($i++)) {
+				$imgsrc = $leadImage->getAttribute("src");
+				$imgdatasrc = $leadImage->getAttribute("data-src");
+				$imgsrclast =  $imgsrc ? $imgsrc : $imgdatasrc;
+				list($img['width'],$img['height'])=getimagesize($imgsrclast);
+				if($img['width'] > 150 && $img['height'] >150){
+					return $imgsrclast;
+				}
+				
+			}
+		}
 
         return null;
     }
