@@ -168,7 +168,7 @@ class Readability {
             if (preg_match("/(comment|meta|footer|footnote)/i", $className)) {
                 $contentScore -= 50;
             } else if(preg_match(
-                "/((^|\\s)(post|hentry|entry[-]?(content|text|body)?|article[-]?(content|text|body)?)(\\s|$))/i",
+                "/((^|\\s)(section|post|hentry|entry[-]?(content|text|body)?|article[-]?(content|text|body)?)(\\s|$))/i",
                 $className)) {
                 $contentScore += 25;
             }
@@ -196,7 +196,7 @@ class Readability {
         }
 
         $topBox = null;
-        
+
         // Assignment from index for performance. 
         //     See http://www.peachpit.com/articles/article.aspx?p=31567&seqNum=5 
         for ($i = 0, $len = sizeof($this->parentNodes); $i < $len; $i++) {
@@ -204,15 +204,31 @@ class Readability {
             $contentScore    = intval($parentNode->getAttribute(Readability::ATTR_CONTENT_SCORE));
             $orgContentScore = intval($topBox ? $topBox->getAttribute(Readability::ATTR_CONTENT_SCORE) : 0);
 
-            if ($contentScore && $contentScore > $orgContentScore) {
-                $topBox = $parentNode;
+            // by raywill, 2016-9-2
+            // for case: <div><p>xxx</p></div><div><p>yyy</p></div>
+            if ($parentNode && $topBox && $topBox->parentNode
+              && $parentNode !== $topBox
+              && $parentNode->parentNode === $topBox->parentNode
+              && $this->scoreMatch($parentNode, $topBox)) { // trust same level
+
+              $topScore = intval($topBox->getAttribute(Readability::ATTR_CONTENT_SCORE));
+              $topBox = $topBox->parentNode;
+              $topBox->setAttribute(Readability::ATTR_CONTENT_SCORE, $topScore + $contentScore);
+            } else if ($contentScore && $contentScore > $orgContentScore) {
+
+              $topBox = $parentNode;
             }
         }
-        
+
         // 此时，$topBox 应为已经判定后的页面内容主元素
         return $topBox;
     }
 
+    protected function scoreMatch($n1, $n2) {
+      $n1Score = intval($n1->getAttribute(Readability::ATTR_CONTENT_SCORE));
+      $n2Score = intval($n2->getAttribute(Readability::ATTR_CONTENT_SCORE));
+      return ($n1Score > 0 && $n2Score > 0);
+    }
 
     /**
      * 获取 HTML 页面标题
