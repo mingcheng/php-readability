@@ -1,14 +1,19 @@
 # PHP Readability Library
 
+If you want to use an up-to-date version of this algorithm,check this newer project: 
+
+https://github.com/andreskrey/readability.php
+
+
 ## Back the fun of reading
 
-The PHP port of [[http://code.google.com/p/arc90labs-readability/|Readability.js by Arc90]].
+The PHP port of [Readability.js by Arc90](http://code.google.com/p/arc90labs-readability/).
 
 
 ## Requirements
 
 * PHP Version >= 5
-* [[http://www.php.net/manual/en/book.dom.php|PHP has builded with DOM(Document Object Model)]]
+* [PHP has builded with DOM(Document Object Model)](http://www.php.net/manual/en/book.dom.php)
 
 
 ## Live demo 
@@ -31,5 +36,5 @@ echo $ReadabilityData['content'];
 
 
 
-PS: For Node.js port, You can [[https://github.com/arrix/node-readability/|check this]].
+PS: For Node.js port, You can [check this](https://github.com/arrix/node-readability/).
 

@@ -1,5 +1,5 @@
 <?php
-// vim: set et sw=4 ts=4 sts=4 fdm=marker ff=unix fenc=utf8 nobomb:
+// vim: set et sw=4 ts=4 sts=4 ft=php fdm=marker ff=unix fenc=utf8 nobomb:
 /**
  * PHP Readability
  *
@@ -7,6 +7,7 @@
  *      http://code.google.com/p/arc90labs-readability/
  *
  * ChangeLog:
+ *      [+] 2014-02-08 Add lead image param and improved get title function.
  *      [+] 2013-12-04 Better error handling and junk tag removal.
  *      [+] 2011-02-17 初始化版本
  *
@@ -19,7 +20,7 @@
  * @link   http://tuxion.nl/
  */
 
-define("READABILITY_VERSION", 0.13);
+define("READABILITY_VERSION", 0.21);
 
 class Readability {
     // 保存判定结果的标记位名称
@@ -103,6 +104,10 @@ class Readability {
         $string = preg_replace("/<br\/?>[ \r\n\s]*<br\/?>/i", "</p><p>", $string);
         $string = preg_replace("/<\/?font[^>]*>/i", "", $string);
 
+        // @see https://github.com/feelinglucky/php-readability/issues/7
+        //   - from http://stackoverflow.com/questions/7130867/remove-script-tag-from-html-content
+        $string = preg_replace("#<script(.*?)>(.*?)</script>#is", "", $string);
+
         return trim($string);
     }
 
@@ -163,7 +168,7 @@ class Readability {
             if (preg_match("/(comment|meta|footer|footnote)/i", $className)) {
                 $contentScore -= 50;
             } else if(preg_match(
-                "/((^|\\s)(post|hentry|entry[-]?(content|text|body)?|article[-]?(content|text|body)?)(\\s|$))/i",
+                "/((^|\\s)(section|post|hentry|entry[-]?(content|text|body)?|article[-]?(content|text|body)?)(\\s|$))/i",
                 $className)) {
                 $contentScore += 25;
             }
@@ -191,7 +196,7 @@ class Readability {
         }
 
         $topBox = null;
-        
+
         // Assignment from index for performance. 
         //     See http://www.peachpit.com/articles/article.aspx?p=31567&seqNum=5 
         for ($i = 0, $len = sizeof($this->parentNodes); $i < $len; $i++) {
@@ -199,15 +204,31 @@ class Readability {
             $contentScore    = intval($parentNode->getAttribute(Readability::ATTR_CONTENT_SCORE));
             $orgContentScore = intval($topBox ? $topBox->getAttribute(Readability::ATTR_CONTENT_SCORE) : 0);
 
-            if ($contentScore && $contentScore > $orgContentScore) {
-                $topBox = $parentNode;
+            // by raywill, 2016-9-2
+            // for case: <div><p>xxx</p></div><div><p>yyy</p></div>
+            if ($parentNode && $topBox && $topBox->parentNode
+              && $parentNode !== $topBox
+              && $parentNode->parentNode === $topBox->parentNode
+              && $this->scoreMatch($parentNode, $topBox)) { // trust same level
+
+              $topScore = intval($topBox->getAttribute(Readability::ATTR_CONTENT_SCORE));
+              $topBox = $topBox->parentNode;
+              $topBox->setAttribute(Readability::ATTR_CONTENT_SCORE, $topScore + $contentScore);
+            } else if ($contentScore && $contentScore > $orgContentScore) {
+
+              $topBox = $parentNode;
             }
         }
-        
+
         // 此时，$topBox 应为已经判定后的页面内容主元素
         return $topBox;
     }
 
+    protected function scoreMatch($n1, $n2) {
+      $n1Score = intval($n1->getAttribute(Readability::ATTR_CONTENT_SCORE));
+      $n2Score = intval($n2->getAttribute(Readability::ATTR_CONTENT_SCORE));
+      return ($n1Score > 0 && $n2Score > 0);
+    }
 
     /**
      * 获取 HTML 页面标题
@@ -238,9 +259,19 @@ class Readability {
     public function getLeadImageUrl($node) {
         $images = $node->getElementsByTagName("img");
 
-        if ($images->length && $leadImage = $images->item(0)) {
-            return $leadImage->getAttribute("src");
-        }
+        if ($images->length){
+			$i = 0;
+			while($leadImage = $images->item($i++)) {
+				$imgsrc = $leadImage->getAttribute("src");
+				$imgdatasrc = $leadImage->getAttribute("data-src");
+				$imgsrclast =  $imgsrc ? $imgsrc : $imgdatasrc;
+				list($img['width'],$img['height'])=getimagesize($imgsrclast);
+				if($img['width'] > 150 && $img['height'] >150){
+					return $imgsrclast;
+				}
+				
+			}
+		}
 
         return null;
     }
